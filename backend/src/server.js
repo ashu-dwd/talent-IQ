@@ -6,6 +6,9 @@ const __dirname = path.resolve();
 
 const app = express();
 
+//connecting to mongodb
+import connectDB from "./lib/db.js";
+
 app.get("/api/health", (req, res) => {
   res.send("api is running");
 });
@@ -18,6 +21,15 @@ if (ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(ENV.PORT, () => {
-  console.log(`Server is running on port ${ENV.PORT}`);
-});
+const startServer = () => {
+  try {
+    app.listen(ENV.PORT, async () => {
+      await connectDB();
+      console.log(`Server is running on port ${ENV.PORT}`);
+    });
+  } catch (error) {
+    console.error("Error starting server:", error);
+  }
+};
+
+startServer();

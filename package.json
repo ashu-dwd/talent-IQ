@@ -9,6 +9,9 @@
   },
   "keywords": [],
   "author": "",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "license": "ISC",
   "packageManager": "pnpm@10.20.0"
 }
