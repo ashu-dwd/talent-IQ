@@ -3,6 +3,7 @@ import { ENV } from "./lib/env.js";
 import path from "path";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./lib/inngest.js";
+import cors from "cors";
 
 const __dirname = path.resolve();
 
