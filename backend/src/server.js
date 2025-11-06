@@ -1,10 +1,18 @@
 import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "path";
+import { serve } from "inngest/express";
+import { inngest, functions } from "./lib/inngest.js";
 
 const __dirname = path.resolve();
 
 const app = express();
+
+//middlewares
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 //connecting to mongodb
 import connectDB from "./lib/db.js";
