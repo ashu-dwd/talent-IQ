@@ -1,18 +1,21 @@
 import { Inngest } from "inngest";
-import { ENV } from "./env.js";
-import connectDB from "./db.js";
+import User from "../models/User.js";
+import { connectDB } from "./db.js";
 
-export const inngest = new Inngest({
-  id: "talent-iq",
-});
+export const inngest = new Inngest({ id: "talent-iq" });
 
 const syncUser = inngest.createFunction(
-  {
-    id: "sync-user",
-  },
+  { id: "sync-user" },
   { event: "clerk/user.created" },
-  async (event) => {
+  async ({ event }) => {
     await connectDB();
+
+    // Add defensive check for event.data
+    if (!event.data) {
+      console.error("Event data is undefined:", JSON.stringify(event, null, 2));
+      throw new Error("Event data is missing from clerk/user.created event");
+    }
+
     const { id, email_addresses, first_name, last_name, image_url } =
       event.data;
 
@@ -22,17 +25,23 @@ const syncUser = inngest.createFunction(
       name: `${first_name || ""} ${last_name || ""}`,
       profileImage: image_url,
     };
+
     await User.create(newUser);
   }
 );
 
-export const deleteUserFromDB = inngest.createFunction(
-  {
-    id: "delete-user-from-db",
-  },
+const deleteUserFromDB = inngest.createFunction(
+  { id: "delete-user-from-db" },
   { event: "clerk/user.deleted" },
-  async (event) => {
+  async ({ event }) => {
     await connectDB();
+
+    // Add defensive check for event.data
+    if (!event.data) {
+      console.error("Event data is undefined:", JSON.stringify(event, null, 2));
+      throw new Error("Event data is missing from clerk/user.deleted event");
+    }
+
     const { id } = event.data;
     await User.deleteOne({ clerkId: id });
   }
