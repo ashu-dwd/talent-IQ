@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
+    clerkId: {
+      type: String,
+      unique: true,
+    },
     name: {
       type: String,
       required: true,
@@ -17,7 +21,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, // Optional for OAuth users
     },
   },
   {
