@@ -16,7 +16,7 @@ app.use(express.json());
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 //connecting to mongodb
-import connectDB from "./lib/db.js";
+import { connectDB } from "./lib/db.js";
 
 app.get("/api/health", (req, res) => {
   res.send("api is running");
